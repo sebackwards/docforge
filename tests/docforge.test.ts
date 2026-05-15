@@ -270,3 +270,41 @@ describe("GET /api/exports", () => {
     expect(res.body.data).toBeDefined();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Filename patterns (regression: legitimate names must be accepted)
+// ---------------------------------------------------------------------------
+
+describe("POST /api/templates filename acceptance", () => {
+  test("accepts_filename_with_hyphens", async () => {
+    const res = await request(app)
+      .post("/api/templates")
+      .set(ALICE)
+      .send({ name: "Hyphenated", filename: "my-report-2024.html", content: "<p>ok</p>" });
+    expect(res.status).toBe(201);
+  });
+
+  test("accepts_filename_with_underscores", async () => {
+    const res = await request(app)
+      .post("/api/templates")
+      .set(ALICE)
+      .send({ name: "Underscored", filename: "annual_report_v2.html", content: "<p>ok</p>" });
+    expect(res.status).toBe(201);
+  });
+
+  test("accepts_filename_with_numbers", async () => {
+    const res = await request(app)
+      .post("/api/templates")
+      .set(ALICE)
+      .send({ name: "Numbered", filename: "report2024q1.html", content: "<p>ok</p>" });
+    expect(res.status).toBe(201);
+  });
+
+  test("accepts_filename_with_dots", async () => {
+    const res = await request(app)
+      .post("/api/templates")
+      .set(ALICE)
+      .send({ name: "Dotted", filename: "report.v2.final.html", content: "<p>ok</p>" });
+    expect(res.status).toBe(201);
+  });
+});
